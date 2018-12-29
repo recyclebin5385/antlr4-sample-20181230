@@ -1,0 +1,22 @@
+{
+    "name": "@recyclebin5385/antlr4-sample1",
+    "version": "0.0.1",
+    "description": "Antlr4による数式パーサのサンプル",
+    "main": "dist/antlr4-sample1.js",
+    "scripts": {
+        "build": "grunt"
+    },
+    "author": "recyclebin5385 <recyclebin5385@yahoo.co.jp> (https://github.com//recyclebin5385)",
+    "license": "MIT",
+    "dependencies": {
+        "antlr4": "^4.7.2"
+    },
+    "devDependencies": {
+        "grunt": "^1.0.3",
+        "grunt-antlr4": "^0.1.6",
+        "grunt-contrib-copy": "^1.0.0",
+        "grunt-webpack": "^3.1.3",
+        "jquery": "^3.3.1",
+        "webpack": "^4.28.2"
+    }
+}
