@@ -1,16 +1,17 @@
 (function(root) {
     // module.exportsがない環境でも使えるようにする
+    var moduleName = "ParserSample1";
     var myModule = {};
-    var oldMyModule = root.ParserSample1;
+    var oldMyModule = root[moduleName];
 
     if (module !== undefined && module.exports) {
         module.exports = myModule;
     } else {
-        root.ParserSample1 = myModule;
+        root[moduleName] = myModule;
     }
 
     myModule.noConflict = function() {
-        root.ParserSample1 = oldMyModule;
+        root[moduleName] = oldMyModule;
         return myModule;
     };
 
@@ -25,7 +26,7 @@
         }
     };
 
-    var antlr4 = require("antlr4");
+    var antlr4 = require("antlr4/index");
     var ExpressionLexer = require("./ExpressionLexer").ExpressionLexer;
     var ExpressionParser = require("./ExpressionParser").ExpressionParser;
     var ExpressionVisitor = require("./ExpressionVisitor").ExpressionVisitor;

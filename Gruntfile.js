@@ -40,11 +40,23 @@ module.exports = function(grunt) {
             webpack: {
                 sample: {
                     mode: "none",
-                    target: "node",
-                    entry: __dirname + "/sample/index.js",
+                    entry: __dirname + "/src/parser-sample1-bundle.js",
                     output: {
-                        path: __dirname + "/work",
-                        filename: "bundle.js"
+                        path: __dirname + "/dist",
+                        filename: "parser-sample1-bundle.js"
+                    },
+                    externals: {
+                        jquery: "jQuery",
+                        "antlr4/index": "antlr4"
+                    }
+                },
+                antlr4: {
+                    mode: "none",
+                    target: "node",
+                    entry: __dirname + "/src/antlr4-bundle.js",
+                    output: {
+                        path: __dirname + "/dist",
+                        filename: "antlr4-bundle.js"
                     }
                 }
             }
@@ -56,5 +68,5 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks("grunt-webpack");
 
-    grunt.registerTask("default", ["jshint", "antlr4", "copy", "webpack:sample"]);
+    grunt.registerTask("default", ["jshint", "antlr4", "copy", "webpack:sample", "webpack:antlr4"]);
 };

@@ -1,8 +1,6 @@
-var ps1 = require("../dist/parser-sample1.js");
-
 function calculate() {
     try{
-        $("#answer").text(ps1.eval($("#expression").val()));
+        $("#answer").text(ParserSample1.eval($("#expression").val()));
     } catch(e) {
         $("#answer").text("ERROR!");
     }
