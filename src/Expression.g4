@@ -63,3 +63,7 @@ nullLiteral
 Decimal
     : [0-9]+ ('.' [0-9]*)? | '.' [0-9]+
     ;
+    
+WS
+    : [ \n\t\r]+ -> skip
+    ;
