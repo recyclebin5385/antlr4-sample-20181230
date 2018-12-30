@@ -1,15 +1,15 @@
-(function(root) {
+(function (root) {
     // module.exportsがない環境でも使えるようにする
     var myModule = {};
     var oldMyModule = root.ParserSample1;
 
-    if (typeof module !== 'undefined' && module.exports) {
+    if (module !== undefined && module.exports) {
         module.exports = myModule;
     } else {
         root.ParserSample1 = myModule;
     }
 
-    myModule.noConflict = function() {
+    myModule.noConflict = function () {
         root.ParserSample1 = oldMyModule;
         return myModule;
     };
@@ -20,23 +20,28 @@
     }
 
     ConstantValueContainer.prototype = {
-        getValue: function() {
+        getValue: function () {
             return this.value;
         }
-    }
+    };
 
     var antlr4 = require("antlr4");
     var ExpressionLexer = require("./ExpressionLexer").ExpressionLexer;
     var ExpressionParser = require("./ExpressionParser").ExpressionParser;
     var ExpressionVisitor = require("./ExpressionVisitor").ExpressionVisitor;
 
-    var myVisitor = new ExpressionVisitor();
 
-    myVisitor.visitOnlyChild = function(ctx) {
+    // Visitorを継承する
+    function EvalVisitor() {
+    }
+
+    Object.setPrototypeOf(EvalVisitor.prototype, ExpressionVisitor.prototype);
+
+    EvalVisitor.prototype.visitOnlyChild = function (ctx) {
         return this.visit(ctx.children[0]);
     };
 
-    myVisitor.visitBinaryExpression = function(ctx) {
+    EvalVisitor.prototype.visitBinaryExpression = function (ctx) {
         var left = this.visit(ctx.children[0]).getValue();
         var right = this.visit(ctx.children[2]).getValue();
 
@@ -69,11 +74,11 @@
         return new ConstantValueContainer(value);
     };
 
-    myVisitor.visitTop = myVisitor.visitOnlyChild;
+    EvalVisitor.prototype.visitTop = EvalVisitor.prototype.visitOnlyChild;
 
-    myVisitor.visitExpression = myVisitor.visitOnlyChild;
+    EvalVisitor.prototype.visitExpression = EvalVisitor.prototype.visitOnlyChild;
 
-    myVisitor.visitAdditiveExpression = function(ctx) {
+    EvalVisitor.prototype.visitAdditiveExpression = function (ctx) {
         switch(ctx.children.length) {
         case 1:
             return this.visitOnlyChild(ctx);
@@ -84,9 +89,9 @@
         default:
             throw "unknown node count";
         }
-    }
+    };
 
-    myVisitor.visitMultiplicativeExpression = function(ctx) {
+    EvalVisitor.prototype.visitMultiplicativeExpression = function (ctx) {
         switch(ctx.children.length) {
         case 1:
             return this.visitOnlyChild(ctx);
@@ -97,9 +102,9 @@
         default:
             throw "unknown node count";
         }
-    }
+    };
 
-    myVisitor.visitClause = function(ctx) {
+    EvalVisitor.prototype.visitClause = function (ctx) {
         switch(ctx.children.length) {
         case 1:
             return this.visitOnlyChild(ctx);
@@ -128,22 +133,22 @@
         }
     };
 
-    myVisitor.visitLiteral = myVisitor.visitOnlyChild;
+    EvalVisitor.prototype.visitLiteral = EvalVisitor.prototype.visitOnlyChild;
 
-    myVisitor.visitDecimalLiteral = function(ctx) {
+    EvalVisitor.prototype.visitDecimalLiteral = function (ctx) {
         return new ConstantValueContainer(Number(ctx.getText()));
     };
 
-    myVisitor.visitBooleanLiteral = function(ctx) {
+    EvalVisitor.prototype.visitBooleanLiteral = function (ctx) {
         return new ConstantValueContainer(ctx.getText() === "true");
     };
 
-    myVisitor.visitNullLiteral = function(ctx) {
+    EvalVisitor.prototype.visitNullLiteral = function (ctx) {
         return new ConstantValueContainer(null);
     };
 
 
-    myModule.eval = function(expression) {
+    myModule.eval = function (expression) {
         var chars = new antlr4.InputStream(expression);
         var lexer = new ExpressionLexer(chars);
         var tokens  = new antlr4.CommonTokenStream(lexer);
@@ -152,8 +157,8 @@
 
         var tree = parser.top();
 
-        return myVisitor.visitTop(tree).getValue();
-    }
+        return new EvalVisitor().visitTop(tree).getValue();
+    };
 
     return myModule;
-})(this);
+}(this));
