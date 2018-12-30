@@ -1,4 +1,4 @@
-(function (root) {
+(function(root) {
     // module.exportsがない環境でも使えるようにする
     var myModule = {};
     var oldMyModule = root.ParserSample1;
@@ -9,7 +9,7 @@
         root.ParserSample1 = myModule;
     }
 
-    myModule.noConflict = function () {
+    myModule.noConflict = function() {
         root.ParserSample1 = oldMyModule;
         return myModule;
     };
@@ -20,7 +20,7 @@
     }
 
     ConstantValueContainer.prototype = {
-        getValue: function () {
+        getValue: function() {
             return this.value;
         }
     };
@@ -37,49 +37,47 @@
 
     Object.setPrototypeOf(EvalVisitor.prototype, ExpressionVisitor.prototype);
 
-    EvalVisitor.prototype.visitOnlyChild = function (ctx) {
+    EvalVisitor.prototype.visitOnlyChild = function(ctx) {
         return this.visit(ctx.children[0]);
     };
 
-    EvalVisitor.prototype.visitBinaryExpression = function (ctx) {
-        var left = this.visit(ctx.children[0]).getValue();
-        var right = this.visit(ctx.children[2]).getValue();
+    EvalVisitor.prototype.visitBinaryExpression = function(ctx) {
+        var $this = this;
 
-        var value;
-        switch(ctx.children[1].getText()) {
-        case "+":
-            value = left + right;
-            break;
+        return {
+            getValue: function() {
+                var left = $this.visit(ctx.children[0]).getValue();
+                var right = $this.visit(ctx.children[2]).getValue();
 
-        case "-":
-            value = left - right;
-            break;
+                switch (ctx.children[1].getText()) {
+                case "+":
+                    return left + right;
 
-        case "*":
-            value = left * right;
-            break;
+                case "-":
+                    return left - right;
 
-        case "/":
-            value = left / right;
-            break;
+                case "*":
+                    return left * right;
 
-        case "%":
-            value = left % right;
-            break;
+                case "/":
+                    return left / right;
 
-        default:
-            throw "unknown operator";
-        }
+                case "%":
+                    return left % right;
 
-        return new ConstantValueContainer(value);
+                default:
+                    throw "unknown operator";
+                }
+            }
+        };
     };
 
     EvalVisitor.prototype.visitTop = EvalVisitor.prototype.visitOnlyChild;
 
     EvalVisitor.prototype.visitExpression = EvalVisitor.prototype.visitOnlyChild;
 
-    EvalVisitor.prototype.visitAdditiveExpression = function (ctx) {
-        switch(ctx.children.length) {
+    EvalVisitor.prototype.visitAdditiveExpression = function(ctx) {
+        switch (ctx.children.length) {
         case 1:
             return this.visitOnlyChild(ctx);
 
@@ -91,8 +89,8 @@
         }
     };
 
-    EvalVisitor.prototype.visitMultiplicativeExpression = function (ctx) {
-        switch(ctx.children.length) {
+    EvalVisitor.prototype.visitMultiplicativeExpression = function(ctx) {
+        switch (ctx.children.length) {
         case 1:
             return this.visitOnlyChild(ctx);
 
@@ -104,26 +102,36 @@
         }
     };
 
-    EvalVisitor.prototype.visitClause = function (ctx) {
-        switch(ctx.children.length) {
+    EvalVisitor.prototype.visitClause = function(ctx) {
+        var $this = this;
+
+        switch (ctx.children.length) {
         case 1:
-            return this.visitOnlyChild(ctx);
+            return $this.visitOnlyChild(ctx);
 
         case 2:
-            var value = this.visit(ctx.children[1]).getValue();
-            switch(ctx.children[0].getText()) {
+            switch (ctx.children[0].getText()) {
             case "+":
-                return this.visit(ctx.children[1]);
+                return $this.visit(ctx.children[1]);
 
             case "-":
-                return new ConstantValueContainer(0 - this.visit(ctx.children[1]).getValue());
+                return {
+                    getValue: function() {
+                        return 0 - $this.visit(ctx.children[1]).getValue();
+                    }
+                };
 
             case "!":
-                return new ConstantValueContainer(!Boolean(this.visit(ctx.children[1]).getValue()));
+                return {
+                    getValue: function() {
+                        return !Boolean($this.visit(ctx.children[1]).getValue());
+                    }
+                };
 
             default:
                 throw "unknown operator";
             }
+            break;
 
         case 3:
             return this.visit(ctx.children[1]);
@@ -135,20 +143,20 @@
 
     EvalVisitor.prototype.visitLiteral = EvalVisitor.prototype.visitOnlyChild;
 
-    EvalVisitor.prototype.visitDecimalLiteral = function (ctx) {
+    EvalVisitor.prototype.visitDecimalLiteral = function(ctx) {
         return new ConstantValueContainer(Number(ctx.getText()));
     };
 
-    EvalVisitor.prototype.visitBooleanLiteral = function (ctx) {
+    EvalVisitor.prototype.visitBooleanLiteral = function(ctx) {
         return new ConstantValueContainer(ctx.getText() === "true");
     };
 
-    EvalVisitor.prototype.visitNullLiteral = function (ctx) {
+    EvalVisitor.prototype.visitNullLiteral = function(ctx) {
         return new ConstantValueContainer(null);
     };
 
 
-    myModule.eval = function (expression) {
+    myModule.eval = function(expression) {
         var chars = new antlr4.InputStream(expression);
         var lexer = new ExpressionLexer(chars);
         var tokens  = new antlr4.CommonTokenStream(lexer);

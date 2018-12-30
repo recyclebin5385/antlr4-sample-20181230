@@ -1,7 +1,7 @@
 {
     "name": "@recyclebin5385/antlr4-sample1",
     "version": "0.0.1",
-    "description": "Antlr4による数式パーサのサンプル",
+    "description": "ANTLR 4による数式パーサのサンプル",
     "main": "dist/antlr4-sample1.js",
     "scripts": {
         "build": "grunt"
@@ -15,6 +15,7 @@
         "grunt": "^1.0.3",
         "grunt-antlr4": "^0.1.6",
         "grunt-contrib-copy": "^1.0.0",
+        "grunt-contrib-jshint": "^2.0.0",
         "grunt-webpack": "^3.1.3",
         "jquery": "^3.3.1",
         "webpack": "^4.28.2"

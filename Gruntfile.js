@@ -1,7 +1,18 @@
-module.exports = function(grunt){
+module.exports = function(grunt) {
     grunt.initConfig(
         {
             pkg: grunt.file.readJSON("package.json"),
+
+            jshint: {
+                main: {
+                    src: [
+                        "package.json",
+                        "Gruntfile.js",
+                        "src/parser-sample1.js",
+                        "sample/index.js"
+                    ]
+                }
+            },
 
             antlr4: {
                 expression: {
@@ -25,7 +36,7 @@ module.exports = function(grunt){
                     dest: "dist/parser-sample1.js"
                 }
             },
-            
+
             webpack: {
                 sample: {
                     mode: "none",
@@ -34,16 +45,16 @@ module.exports = function(grunt){
                     output: {
                         path: __dirname + "/work",
                         filename: "bundle.js"
-                    },
+                    }
                 }
             }
         }
     );
 
-
+    grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks("grunt-antlr4");
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks("grunt-webpack");
 
-    grunt.registerTask("default", ["antlr4", "copy", "webpack:sample"]);
+    grunt.registerTask("default", ["jshint", "antlr4", "copy", "webpack:sample"]);
 };
