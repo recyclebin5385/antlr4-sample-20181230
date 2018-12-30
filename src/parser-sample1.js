@@ -1,5 +1,19 @@
 (function(root) {
-    // module.exportsがない環境でも使えるようにする
+    /*
+     * Other modules
+     */
+
+    var antlr4 = require("antlr4/index");
+    var ExpressionLexer = require("./ExpressionLexer").ExpressionLexer;
+    var ExpressionParser = require("./ExpressionParser").ExpressionParser;
+    var ExpressionVisitor = require("./ExpressionVisitor").ExpressionVisitor;
+
+
+    /*
+     * Enable export in environments both with and without "module.exports"
+     * (May have no meaning?)
+     */
+
     var moduleName = "ParserSample1";
     var myModule = {};
     var oldMyModule = root[moduleName];
@@ -16,6 +30,10 @@
     };
 
 
+    /*
+     * A class used in the expression evaluator.
+     */
+
     function ConstantValueContainer(value) {
         this.value = value;
     }
@@ -26,13 +44,10 @@
         }
     };
 
-    var antlr4 = require("antlr4/index");
-    var ExpressionLexer = require("./ExpressionLexer").ExpressionLexer;
-    var ExpressionParser = require("./ExpressionParser").ExpressionParser;
-    var ExpressionVisitor = require("./ExpressionVisitor").ExpressionVisitor;
 
-
-    // Visitorを継承する
+    /*
+     * A custom visitor class which extends ExpressionVisitor.
+     */
     function EvalVisitor() {
     }
 
@@ -157,6 +172,9 @@
     };
 
 
+    /*
+     * Evaluate expression.
+     */
     myModule.eval = function(expression) {
         var chars = new antlr4.InputStream(expression);
         var lexer = new ExpressionLexer(chars);

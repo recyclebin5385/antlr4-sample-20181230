@@ -1,7 +1,7 @@
 {
     "name": "@recyclebin5385/antlr4-sample1",
     "version": "0.0.1",
-    "description": "ANTLR 4による数式パーサのサンプル",
+    "description": "A sample of an arithmetic expression parser with ANTLR 4",
     "main": "dist/antlr4-sample1.js",
     "scripts": {
         "build": "grunt"

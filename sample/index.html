@@ -1,13 +1,21 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
-    <head>
+  <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=8" />
-    <title>サンプル</title>
+    <title>Sample</title>
     <link rel="stylesheet" type="text/css" href="style.css" />
   </head>
+
   <body>
-    <input type="text" id="expression" style="width: 200px;" /> = <span id="answer"></span>
+    <div>
+      Input an expression and press enter.<br/>
+      Decimal numbers, +, -, *, /, % and parentheses("(" and ")") can be used.
+    </div>
+
+    <div>
+      <input type="text" id="expression" style="width: 200px;" /> = <span id="answer"></span>
+    </div>
 
     <script src="../node_modules/jquery/dist/jquery.js"></script>
     <script src="../dist/antlr4-bundle.js"></script>
